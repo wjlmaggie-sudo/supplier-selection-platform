@@ -147,6 +147,7 @@ input[type="search"]:hover {
 .app-shell.sidebar-collapsed .brand-block > div:last-child,
 .app-shell.sidebar-collapsed .logout-button,
 .app-shell.sidebar-collapsed .field,
+.app-shell.sidebar-collapsed .factory-panel,
 .app-shell.sidebar-collapsed .weight-panel {
   display: none;
 }
@@ -247,6 +248,16 @@ h2 {
   box-shadow: var(--shadow);
 }
 
+.factory-panel {
+  margin-top: 18px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--accent);
+  border-radius: 2px;
+  background: #ffffff;
+  box-shadow: var(--shadow);
+}
+
 .panel-heading,
 .section-heading {
   display: flex;
@@ -256,7 +267,8 @@ h2 {
   margin-bottom: 16px;
 }
 
-.weight-panel .panel-heading {
+.weight-panel .panel-heading,
+.factory-panel .panel-heading {
   display: grid;
   grid-template-columns: 1fr;
   gap: 10px;
@@ -265,6 +277,43 @@ h2 {
 
 .weight-panel .panel-heading button {
   justify-self: start;
+}
+
+.factory-panel .field {
+  margin-bottom: 12px;
+}
+
+.toggle-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 12px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.toggle-row input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+}
+
+.factory-advanced {
+  margin-top: 4px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+
+.factory-advanced summary {
+  cursor: pointer;
+  color: var(--accent-strong);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.factory-advanced .field:first-of-type {
+  margin-top: 12px;
 }
 
 .button-group {
@@ -654,8 +703,13 @@ input[type="range"] {
 }
 
 .paste-field,
-.upload-panel {
+.upload-panel,
+.form-note {
   grid-column: 1 / -1;
+}
+
+.factory-derived {
+  display: none;
 }
 
 .upload-panel {

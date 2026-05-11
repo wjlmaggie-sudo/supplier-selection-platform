@@ -38,6 +38,49 @@ const packagingTypes = [
   { sap: "FB", description: "SET PAL. FB, AUFSTECKRING, DECKEL KU", typeOfBox: "GB", group: "GLT", tme: "TME-S-000030" },
 ];
 
+const factoryProfiles = [
+  {
+    id: "snc",
+    name: "SNC",
+    safetyStockMode: "months",
+    safetyStockMonths: 4,
+    safetyStockDays: 5,
+    workingDaysPerYear: 220,
+    highBayDailyCostPerPallet: 0.071,
+    overnightCostPerMoq: 0,
+  },
+  {
+    id: "gwe",
+    name: "GWE",
+    safetyStockMode: "months",
+    safetyStockMonths: 2,
+    safetyStockDays: 5,
+    workingDaysPerYear: 260,
+    highBayDailyCostPerPallet: 0.071,
+    overnightCostPerMoq: 0,
+  },
+  {
+    id: "ewn",
+    name: "EWN",
+    safetyStockMode: "workingDays",
+    safetyStockMonths: 0,
+    safetyStockDays: 5,
+    workingDaysPerYear: 260,
+    highBayDailyCostPerPallet: 0.071,
+    overnightCostPerMoq: 0,
+  },
+  {
+    id: "wkc",
+    name: "WKC",
+    safetyStockMode: "workingDays",
+    safetyStockMonths: 0,
+    safetyStockDays: 5,
+    workingDaysPerYear: 220,
+    highBayDailyCostPerPallet: 0.071,
+    overnightCostPerMoq: 0,
+  },
+];
+
 const translations = {
   zh: {
     platform: "Supplier Choice",
@@ -56,6 +99,20 @@ const translations = {
     region: "区域",
     incoterms: "Incoterms",
     supplier: "供应商名字",
+    requiredInputHint: "新增供应商需填写基础报价、MOQ、重量、运输成本、Handling、关税，以及物料对应的包装类型、每PV数量和优化后运输容器数量；Safety stock、高架仓储和 Overnight 成本由左侧工厂设置决定。",
+    factorySettingTitle: "工厂设置",
+    factoryProfile: "工厂",
+    safetyStockMonths: "安全库存月数",
+    safetyStockMode: "安全库存方式",
+    safetyStockDays: "安全库存天数",
+    workingDaysPerYear: "年度工作天数",
+    reusablePackaging: "循环包装",
+    defaultPackaging: "默认包装",
+    handlingMode: "Handling方式",
+    handlingCostPerDelivery: "Handling/次",
+    customsCostPerDelivery: "关税/次",
+    highBayDailyCost: "高架仓储/托/天",
+    overnightCost: "Overnight/Flash 每MOQ",
     weightTitle: "选择维度权重",
     reset: "重置",
     priceWeight: "总单价",
@@ -170,6 +227,20 @@ const translations = {
     region: "Region",
     incoterms: "Incoterms",
     supplier: "Supplier",
+    requiredInputHint: "Enter the commercial basics plus material-specific logistics inputs: packaging type, Qty/PV, optimized transport-box quantity, handling, and customs. Safety stock, high-bay storage, and overnight cost come from the factory setting on the left.",
+    factorySettingTitle: "Factory setting",
+    factoryProfile: "Factory",
+    safetyStockMonths: "Safety stock months",
+    safetyStockMode: "Safety stock basis",
+    safetyStockDays: "Safety stock days",
+    workingDaysPerYear: "Working days/year",
+    reusablePackaging: "Reusable packaging",
+    defaultPackaging: "Default packaging",
+    handlingMode: "Handling mode",
+    handlingCostPerDelivery: "Handling/order",
+    customsCostPerDelivery: "Customs/order",
+    highBayDailyCost: "High-bay/pallet/day",
+    overnightCost: "Overnight/Flash per MOQ",
     weightTitle: "Decision weights",
     reset: "Reset",
     priceWeight: "Total unit cost",
@@ -284,6 +355,20 @@ const translations = {
     region: "Region",
     incoterms: "Incoterms",
     supplier: "Lieferant",
+    requiredInputHint: "Neue Lieferanten benötigen Basisdaten plus materialspezifische Logistikdaten: Verpackungstyp, Menge/PV, optimierte Transportbox-Menge, Handling und Zoll. Sicherheitsbestand, Hochregallager und Overnight-Kosten kommen aus der Werkseinstellung links.",
+    factorySettingTitle: "Werkseinstellung",
+    factoryProfile: "Werk",
+    safetyStockMonths: "Sicherheitsbestand Monate",
+    safetyStockMode: "Sicherheitsbestand Basis",
+    safetyStockDays: "Sicherheitsbestand Tage",
+    workingDaysPerYear: "Arbeitstage/Jahr",
+    reusablePackaging: "Mehrwegverpackung",
+    defaultPackaging: "Standardverpackung",
+    handlingMode: "Handling-Modus",
+    handlingCostPerDelivery: "Handling/Bestellung",
+    customsCostPerDelivery: "Zoll/Bestellung",
+    highBayDailyCost: "Hochregal/Palette/Tag",
+    overnightCost: "Overnight/Flash je MOQ",
     weightTitle: "Entscheidungsgewichte",
     reset: "Zurücksetzen",
     priceWeight: "Gesamtkosten/Stk.",
@@ -414,6 +499,13 @@ const controls = {
   regionFilter: document.querySelector("#regionFilter"),
   incotermFilter: document.querySelector("#incotermFilter"),
   supplierSearch: document.querySelector("#supplierSearch"),
+  factoryProfileSelect: document.querySelector("#factoryProfileSelect"),
+  factorySafetyStockMode: document.querySelector("#factorySafetyStockMode"),
+  factorySafetyStockMonths: document.querySelector("#factorySafetyStockMonths"),
+  factorySafetyStockDays: document.querySelector("#factorySafetyStockDays"),
+  factoryWorkingDaysPerYear: document.querySelector("#factoryWorkingDaysPerYear"),
+  factoryOvernightCost: document.querySelector("#factoryOvernightCost"),
+  factoryHighBayDailyCost: document.querySelector("#factoryHighBayDailyCost"),
   supplierRows: document.querySelector("#supplierRows"),
   recordRows: document.querySelector("#recordRows"),
   cooperationRows: document.querySelector("#cooperationRows"),
@@ -462,6 +554,9 @@ const controls = {
   formPackingPerPallet: document.querySelector("#formPackingPerPallet"),
   formRepackCostPerContainer: document.querySelector("#formRepackCostPerContainer"),
   formSeaCost: document.querySelector("#formSeaCost"),
+  formHandlingMode: document.querySelector("#formHandlingMode"),
+  formHandlingCost: document.querySelector("#formHandlingCost"),
+  formCustomsCost: document.querySelector("#formCustomsCost"),
   formAirCost: document.querySelector("#formAirCost"),
   formCo2Sea: document.querySelector("#formCo2Sea"),
   formCo2Air: document.querySelector("#formCo2Air"),
@@ -687,8 +782,13 @@ function calculateTemplateTco(input) {
   const repackProcesses = adjustedForecast / input.amountPerReusableBin;
   const repackCost = repackProcesses * input.repackCostPerContainer;
   const deliveriesPerYear = Math.round(adjustedForecast / input.supplierMoq);
-  const eupConversionQuantity = input.amountPerReusableBin * input.eupMultiplier;
-  const safetyStock = Math.ceil((adjustedForecast / 12) * input.safetyStockMonths);
+  const eupConversionQuantity =
+    input.eupConversionQuantity || input.amountPerReusableBin * input.eupMultiplier;
+  const safetyStockBase =
+    input.safetyStockMode === "workingDays"
+      ? (adjustedForecast / input.workingDaysPerYear) * input.safetyStockDays
+      : (adjustedForecast / 12) * input.safetyStockMonths;
+  const safetyStock = Math.ceil(safetyStockBase);
   const safetyStockPallets = Math.ceil(safetyStock / eupConversionQuantity);
   const palletsPerMoq = input.supplierMoq / input.optimizedPackingPerPallet;
   const palletsYearlyForecast = adjustedForecast / input.optimizedPackingPerPallet;
@@ -696,8 +796,18 @@ function calculateTemplateTco(input) {
   const seaTransport = input.transportCostSeaPerMoq * deliveriesPerYear;
   const airTransport = input.transportCostAirPerMoq;
   const transportTotal = seaTransport + airTransport;
-  const storage = adjustedForecast * input.materialPrice * 0.085 / 12 * input.safetyStockMonths;
-  const handling = deliveriesPerYear * input.handlingCostPerDelivery;
+  const storage =
+    input.safetyStockMode === "workingDays"
+      ? adjustedForecast *
+        input.materialPrice *
+        0.085 /
+        input.workingDaysPerYear *
+        input.safetyStockDays
+      : adjustedForecast * input.materialPrice * 0.085 / 12 * input.safetyStockMonths;
+  const handling =
+    input.handlingMode === "fixed"
+      ? input.handlingCostPerDelivery
+      : deliveriesPerYear * input.handlingCostPerDelivery;
   const customs = deliveriesPerYear * input.customsCostPerDelivery;
   const warehouse = safetyStockPallets * input.highBayDailyCostPerPallet * 365;
   const annualLogisticsCost =
@@ -824,32 +934,77 @@ function renderAnalytics(rows) {
 }
 
 function getSelectedPackaging() {
-  return (
-    packagingTypes.find((item) => item.sap === controls.formPvForm.value) ||
-    packagingTypes.find((item) => item.sap === "K1")
-  );
+  if (!controls.formPvForm.value) return null;
+  return packagingTypes.find((item) => item.sap === controls.formPvForm.value) || null;
 }
 
 function fillPackagingOptions() {
-  controls.formPvForm.innerHTML = packagingTypes
+  const options = [
+    '<option value=""></option>',
+    ...packagingTypes
     .map(
       (item) =>
-        `<option value="${escapeHtml(item.sap)}">${escapeHtml(item.typeOfBox)} | ${escapeHtml(item.description)}</option>`,
-    )
+        `<option value="${escapeHtml(item.sap)}">${escapeHtml(item.sap)} | ${escapeHtml(item.description)}</option>`,
+    ),
+  ]
     .join("");
-  controls.formPvForm.value = "K1";
+  controls.formPvForm.innerHTML = options;
+  controls.formPvForm.value = "";
   updatePackagingDescription();
+}
+
+function fillFactoryProfiles() {
+  controls.factoryProfileSelect.innerHTML = factoryProfiles
+    .map((profile) => `<option value="${profile.id}">${escapeHtml(profile.name)}</option>`)
+    .join("");
+}
+
+function getFactoryProfile() {
+  return (
+    factoryProfiles.find((profile) => profile.id === controls.factoryProfileSelect.value) ||
+    factoryProfiles[0]
+  );
+}
+
+function applyFactoryProfile() {
+  const profile = getFactoryProfile();
+  controls.factorySafetyStockMode.value = profile.safetyStockMode;
+  controls.factorySafetyStockMonths.value = profile.safetyStockMonths;
+  controls.factorySafetyStockDays.value = profile.safetyStockDays;
+  controls.factoryWorkingDaysPerYear.value = profile.workingDaysPerYear;
+  controls.factoryOvernightCost.value = profile.overnightCostPerMoq;
+  controls.factoryHighBayDailyCost.value = profile.highBayDailyCostPerPallet;
+  controls.formAirCost.value = profile.overnightCostPerMoq;
+}
+
+function readFactorySettings() {
+  return {
+    safetyStockMode: controls.factorySafetyStockMode.value,
+    safetyStockMonths: readNumber(controls.factorySafetyStockMonths, 4),
+    safetyStockDays: readNumber(controls.factorySafetyStockDays, 5),
+    workingDaysPerYear: readNumber(controls.factoryWorkingDaysPerYear, 220),
+    transportCostAirPerMoq: readNumber(controls.factoryOvernightCost),
+    highBayDailyCostPerPallet: readNumber(controls.factoryHighBayDailyCost, 0.071),
+  };
 }
 
 function updatePackagingDescription() {
   const selected = getSelectedPackaging();
-  if (!selected) return;
-  if (selected.group === "KLT" && Number(controls.formRepackCostPerContainer.value || 0) === 5.58) {
-    controls.formRepackCostPerContainer.value = 3.4;
+  if (!selected) {
+    controls.formRepackCostPerContainer.value = "";
+    return;
   }
-  if (selected.group === "GLT" && Number(controls.formRepackCostPerContainer.value || 0) === 3.4) {
-    controls.formRepackCostPerContainer.value = 20.69;
-  }
+  controls.formRepackCostPerContainer.value = selected.group === "GLT" ? 20.69 : 3.4;
+}
+
+function getPackagingConversionMultiplier(packaging) {
+  const type = packaging?.typeOfBox || packaging?.sap || "";
+  if (["K1", "K6", "K8", "K9"].includes(type)) return 32;
+  if (["K2"].includes(type)) return 16;
+  if (["K3"].includes(type)) return 8;
+  if (["K4"].includes(type)) return 4;
+  if (["GB", "K5", "EUP", "EUPH", "FB"].includes(type)) return 2;
+  return packaging?.group === "KLT" ? 32 : 2;
 }
 
 function summarizeBySupplier(rows) {
@@ -1156,11 +1311,11 @@ function resetSupplierForm() {
   if (controls.formQuality) controls.formQuality.value = 85;
   if (controls.formService) controls.formService.value = 85;
   if (controls.formRisk) controls.formRisk.value = 20;
-  controls.formCapacity.value = 0;
-  controls.formMoq.value = 0;
   if (controls.formSustainability) controls.formSustainability.value = 75;
-  controls.formOneTimeCost.value = 0;
-  controls.formPvForm.value = "K1";
+  controls.formIncoterm.value = "";
+  controls.formCurrency.value = "";
+  controls.formPvForm.value = "";
+  controls.formHandlingMode.value = "";
   updatePackagingDescription();
 }
 
@@ -1168,24 +1323,36 @@ function addSupplier(event) {
   event.preventDefault();
   const materialPrice = readNumber(controls.formPrice);
   const forecast = readNumber(controls.formCapacity);
+  const factory = readFactorySettings();
   const selectedPackaging = getSelectedPackaging();
-  const eupMultiplier = selectedPackaging?.group === "KLT" ? 32 : 2;
+  const eupMultiplier = getPackagingConversionMultiplier(selectedPackaging);
+  const amountPerReusableBin = readNumber(controls.formAmountPerBin, 1);
+  const optimizedPackingPerPallet = readNumber(controls.formPackingPerPallet, 1);
+  const repackCostPerContainer = readNumber(
+    controls.formRepackCostPerContainer,
+    selectedPackaging?.group === "GLT" ? 20.69 : 3.4
+  );
   const tco = calculateTemplateTco({
     forecast,
     share: readNumber(controls.formShare, 1),
     weightPerPiece: readNumber(controls.formWeightPerPiece, 0.1),
     materialPrice,
     supplierMoq: readNumber(controls.formMoq, 1),
-    amountPerReusableBin: readNumber(controls.formAmountPerBin, 1),
+    amountPerReusableBin,
     eupMultiplier,
-    optimizedPackingPerPallet: readNumber(controls.formPackingPerPallet, 1),
-    repackCostPerContainer: readNumber(controls.formRepackCostPerContainer, 5.58),
+    eupConversionQuantity: amountPerReusableBin * eupMultiplier,
+    optimizedPackingPerPallet,
+    repackCostPerContainer,
     transportCostSeaPerMoq: readNumber(controls.formSeaCost),
-    transportCostAirPerMoq: readNumber(controls.formAirCost),
-    safetyStockMonths: 4,
-    handlingCostPerDelivery: 120,
-    customsCostPerDelivery: 15.27,
-    highBayDailyCostPerPallet: 0.071,
+    transportCostAirPerMoq: factory.transportCostAirPerMoq,
+    safetyStockMode: factory.safetyStockMode,
+    safetyStockMonths: factory.safetyStockMonths,
+    safetyStockDays: factory.safetyStockDays,
+    workingDaysPerYear: factory.workingDaysPerYear,
+    handlingMode: controls.formHandlingMode.value,
+    handlingCostPerDelivery: readNumber(controls.formHandlingCost, 120),
+    customsCostPerDelivery: readNumber(controls.formCustomsCost, 15.27),
+    highBayDailyCostPerPallet: factory.highBayDailyCostPerPallet,
     oneTimeCost: readNumber(controls.formOneTimeCost),
   });
   const logisticsPerPiece = tco.logisticsPerPiece;
@@ -1400,6 +1567,22 @@ function bindEvents() {
   ].filter(Boolean).forEach((control) => control.addEventListener("input", render));
   controls.materialPaste.addEventListener("input", selectMaterialFromPaste);
 
+  controls.factoryProfileSelect.addEventListener("change", () => {
+    applyFactoryProfile();
+    render();
+  });
+
+  [
+    controls.factorySafetyStockMode,
+    controls.factorySafetyStockMonths,
+    controls.factorySafetyStockDays,
+    controls.factoryWorkingDaysPerYear,
+    controls.factoryOvernightCost,
+    controls.factoryHighBayDailyCost,
+  ].forEach((control) => {
+    control.addEventListener(control.type === "checkbox" ? "change" : "input", render);
+  });
+
   Object.values(weightInputs)
     .filter(Boolean)
     .filter((node) => node.tagName === "INPUT")
@@ -1454,6 +1637,8 @@ function bindEvents() {
 function init() {
   bindEvents();
   fillPackagingOptions();
+  fillFactoryProfiles();
+  applyFactoryProfile();
   baseSuppliers = loadExcelSuppliers();
   rebuildSuppliers();
   render();

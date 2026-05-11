@@ -65,6 +65,46 @@
           <input id="supplierSearch" type="search" placeholder="搜索供应商" />
         </label>
 
+        <div class="factory-panel">
+          <div class="panel-heading">
+            <h2 data-i18n="factorySettingTitle">Factory setting</h2>
+          </div>
+          <label class="field">
+            <span data-i18n="factoryProfile">Factory</span>
+            <select id="factoryProfileSelect"></select>
+          </label>
+          <label class="field">
+            <span data-i18n="safetyStockMode">Safety stock basis</span>
+            <select id="factorySafetyStockMode">
+              <option value="months">Months</option>
+              <option value="workingDays">Working days</option>
+            </select>
+          </label>
+          <label class="field">
+            <span data-i18n="safetyStockMonths">Safety stock months</span>
+            <input id="factorySafetyStockMonths" inputmode="decimal" />
+          </label>
+          <label class="field">
+            <span data-i18n="safetyStockDays">Safety stock days</span>
+            <input id="factorySafetyStockDays" inputmode="decimal" />
+          </label>
+          <label class="field">
+            <span data-i18n="workingDaysPerYear">Working days/year</span>
+            <input id="factoryWorkingDaysPerYear" inputmode="numeric" />
+          </label>
+          <label class="field">
+            <span data-i18n="overnightCost">Overnight/Flash per MOQ</span>
+            <input id="factoryOvernightCost" inputmode="decimal" />
+          </label>
+          <details class="factory-advanced">
+            <summary>Advanced</summary>
+            <label class="field">
+              <span data-i18n="highBayDailyCost">High-bay/pallet/day</span>
+              <input id="factoryHighBayDailyCost" inputmode="decimal" />
+            </label>
+          </details>
+        </div>
+
         <div class="weight-panel">
           <div class="panel-heading">
             <h2 data-i18n="weightTitle">选择维度权重</h2>
@@ -146,21 +186,25 @@
             </div>
           </div>
           <form id="supplierForm" class="supplier-form is-hidden">
+            <p class="field-note form-note" data-i18n="requiredInputHint">
+              For a new supplier, enter only the basic inputs. Factory-specific settings are managed on the left.
+            </p>
             <label class="field is-required">
               <span data-i18n="material">物料名称</span>
-              <input id="formMaterial" name="material" required placeholder="PCB Assembly" />
+              <input id="formMaterial" name="material" required />
             </label>
             <label class="field is-required">
               <span data-i18n="supplier">供应商名字</span>
-              <input id="formSupplier" name="supplier" required placeholder="Supplier name" />
+              <input id="formSupplier" name="supplier" required />
             </label>
             <label class="field is-required">
               <span data-i18n="region">区域</span>
-              <input id="formRegion" name="region" required placeholder="China" />
+              <input id="formRegion" name="region" required />
             </label>
             <label class="field is-required">
               <span data-i18n="incoterms">Incoterms</span>
               <select id="formIncoterm" name="incoterm" required>
+                <option value=""></option>
                 <option value="EXW">EXW</option>
                 <option value="FOB">FOB</option>
                 <option value="CIF">CIF</option>
@@ -171,6 +215,7 @@
             <label class="field is-required">
               <span data-i18n="currency">货币</span>
               <select id="formCurrency" name="currency" required>
+                <option value=""></option>
                 <option value="USD">USD</option>
                 <option value="EUR">EUR</option>
                 <option value="CNY">CNY</option>
@@ -182,19 +227,19 @@
             </label>
             <label class="field is-required">
               <span data-i18n="capacity">月产能</span>
-              <input id="formCapacity" name="capacity" inputmode="numeric" value="0" />
+              <input id="formCapacity" name="capacity" inputmode="numeric" required />
             </label>
             <label class="field is-required">
               <span data-i18n="moq">MOQ</span>
-              <input id="formMoq" name="moq" inputmode="numeric" value="0" />
+              <input id="formMoq" name="moq" inputmode="numeric" required />
             </label>
             <label class="field">
               <span>Share</span>
-              <input id="formShare" inputmode="decimal" value="1" />
+              <input id="formShare" inputmode="decimal" />
             </label>
             <label class="field is-required">
               <span data-i18n="weightPerPiece">单件重量</span>
-              <input id="formWeightPerPiece" inputmode="decimal" value="0.1" />
+              <input id="formWeightPerPiece" inputmode="decimal" required />
             </label>
             <label class="field is-required">
               <span data-i18n="packagingType">包装类型</span>
@@ -202,35 +247,51 @@
             </label>
             <label class="field is-required">
               <span data-i18n="amountPerBin">每箱数量</span>
-              <input id="formAmountPerBin" inputmode="numeric" value="20" />
+              <input id="formAmountPerBin" inputmode="numeric" required />
             </label>
             <label class="field is-required">
               <span data-i18n="packingPerPallet">每托数量</span>
-              <input id="formPackingPerPallet" inputmode="numeric" value="240" />
+              <input id="formPackingPerPallet" inputmode="numeric" required />
             </label>
-            <label class="field is-required">
+            <label class="field factory-derived">
               <span data-i18n="repackCostPerContainer">包装操作/箱</span>
               <input id="formRepackCostPerContainer" inputmode="decimal" value="5.58" />
             </label>
             <label class="field is-required">
               <span data-i18n="seaCost">海运/LKW每MOQ</span>
-              <input id="formSeaCost" inputmode="decimal" value="0" />
+              <input id="formSeaCost" inputmode="decimal" required />
             </label>
             <label class="field is-required">
+              <span data-i18n="handlingMode">Handling方式</span>
+              <select id="formHandlingMode" required>
+                <option value=""></option>
+                <option value="perDelivery">Per delivery</option>
+                <option value="fixed">Fixed once</option>
+              </select>
+            </label>
+            <label class="field is-required">
+              <span data-i18n="handlingCostPerDelivery">Handling/次</span>
+              <input id="formHandlingCost" inputmode="decimal" required />
+            </label>
+            <label class="field is-required">
+              <span data-i18n="customsCostPerDelivery">关税/次</span>
+              <input id="formCustomsCost" inputmode="decimal" required />
+            </label>
+            <label class="field">
+              <span data-i18n="oneTimeCost">一次性物流成本</span>
+              <input id="formOneTimeCost" inputmode="decimal" />
+            </label>
+            <label class="field factory-derived">
               <span data-i18n="airCost">空运/Flash每MOQ</span>
               <input id="formAirCost" inputmode="decimal" value="0" />
             </label>
             <label class="field">
               <span data-i18n="co2Sea">CO2每MOQ</span>
-              <input id="formCo2Sea" inputmode="decimal" value="0" />
+              <input id="formCo2Sea" inputmode="decimal" />
             </label>
             <label class="field">
               <span data-i18n="co2Air">CO2空运</span>
-              <input id="formCo2Air" inputmode="decimal" value="0" />
-            </label>
-            <label class="field is-required">
-              <span data-i18n="oneTimeCost">一次性物流成本</span>
-              <input id="formOneTimeCost" inputmode="decimal" value="0" />
+              <input id="formCo2Air" inputmode="decimal" />
             </label>
             <div class="form-actions">
               <span id="savedNotice" aria-live="polite"></span>
@@ -378,6 +439,6 @@
 
     <script src="embedded-data.js"></script>
     <script src="embedded-new-tco-data.js"></script>
-    <script src="app.js?v=20260511-default-3520"></script>
+    <script src="app.js?v=20260511-supplier-logistics"></script>
   </body>
 </html>
