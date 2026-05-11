@@ -4,6 +4,7 @@ const STORAGE_KEY = "supplierChoiceCustomSuppliers";
 const APPROVAL_STORAGE_KEY = "supplierChoiceApprovalSnapshots";
 const SESSION_KEY = "supplierChoiceLoggedIn";
 const SIDEBAR_STORAGE_KEY = "supplierChoiceSidebarCollapsed";
+const DEFAULT_MATERIAL_CODE = "A5E55153520";
 
 const packagingTypes = [
   { sap: "GB", description: "GITTERBOX EU 1240X830X970 METALL", typeOfBox: "GB", group: "GLT", tme: "TME-G-000001" },
@@ -1067,7 +1068,11 @@ function render() {
 
   fillSelect(controls.materialFilter, uniqueValues("material"));
   if (!state.defaultMaterialApplied && !controls.materialFilter.value) {
-    controls.materialFilter.value = uniqueValues("material")[0] || "";
+    const materials = uniqueValues("material");
+    controls.materialFilter.value =
+      materials.find((material) => material.includes(DEFAULT_MATERIAL_CODE)) ||
+      materials[0] ||
+      "";
     state.defaultMaterialApplied = true;
   }
   fillSelect(controls.regionFilter, uniqueValues("region"));
