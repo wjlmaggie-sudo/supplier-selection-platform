@@ -500,7 +500,6 @@ const controls = {
   incotermFilter: document.querySelector("#incotermFilter"),
   supplierSearch: document.querySelector("#supplierSearch"),
   factoryProfileSelect: document.querySelector("#factoryProfileSelect"),
-  factorySafetyStockMode: document.querySelector("#factorySafetyStockMode"),
   factorySafetyStockMonths: document.querySelector("#factorySafetyStockMonths"),
   factorySafetyStockDays: document.querySelector("#factorySafetyStockDays"),
   factoryWorkingDaysPerYear: document.querySelector("#factoryWorkingDaysPerYear"),
@@ -968,7 +967,6 @@ function getFactoryProfile() {
 
 function applyFactoryProfile() {
   const profile = getFactoryProfile();
-  controls.factorySafetyStockMode.value = profile.safetyStockMode;
   controls.factorySafetyStockMonths.value = profile.safetyStockMonths;
   controls.factorySafetyStockDays.value = profile.safetyStockDays;
   controls.factoryWorkingDaysPerYear.value = profile.workingDaysPerYear;
@@ -978,10 +976,12 @@ function applyFactoryProfile() {
 }
 
 function readFactorySettings() {
+  const safetyStockMonths = readNumber(controls.factorySafetyStockMonths, 0);
+  const safetyStockDays = readNumber(controls.factorySafetyStockDays, 0);
   return {
-    safetyStockMode: controls.factorySafetyStockMode.value,
-    safetyStockMonths: readNumber(controls.factorySafetyStockMonths, 4),
-    safetyStockDays: readNumber(controls.factorySafetyStockDays, 5),
+    safetyStockMode: safetyStockMonths > 0 ? "months" : "workingDays",
+    safetyStockMonths,
+    safetyStockDays,
     workingDaysPerYear: readNumber(controls.factoryWorkingDaysPerYear, 220),
     transportCostAirPerMoq: readNumber(controls.factoryOvernightCost),
     highBayDailyCostPerPallet: readNumber(controls.factoryHighBayDailyCost, 0.071),
@@ -1573,7 +1573,6 @@ function bindEvents() {
   });
 
   [
-    controls.factorySafetyStockMode,
     controls.factorySafetyStockMonths,
     controls.factorySafetyStockDays,
     controls.factoryWorkingDaysPerYear,
