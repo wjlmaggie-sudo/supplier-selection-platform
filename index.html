@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Supplier Choice Platform</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <section class="login-screen" id="loginScreen">
+      <form class="login-card" id="loginForm">
+        <div class="brand-block">
+          <div class="brand-mark">DI</div>
+          <div>
+            <p class="eyebrow" data-i18n="secureAccess">Secure access</p>
+            <h1 data-i18n="loginTitle">供应商平台登录</h1>
+          </div>
+        </div>
+        <label class="field">
+          <span data-i18n="username">用户名</span>
+          <input id="usernameInput" autocomplete="username" required />
+        </label>
+        <label class="field">
+          <span data-i18n="password">密码</span>
+          <input id="passwordInput" type="password" autocomplete="current-password" required />
+        </label>
+        <p class="login-error" id="loginError" aria-live="polite"></p>
+        <button type="submit" data-i18n="login">登录</button>
+      </form>
+    </section>
+
+    <div class="app-shell is-hidden" id="appShell">
+      <aside class="sidebar" aria-label="Filters">
+        <div class="brand-block">
+          <div class="brand-mark">DI</div>
+          <div>
+            <p class="eyebrow" data-i18n="platform">Supplier Choice</p>
+            <h1 data-i18n="title">供应商选择平台</h1>
+          </div>
+        </div>
+        <button class="logout-button" id="logoutButton" type="button" data-i18n="logout">退出登录</button>
+        <button class="sidebar-toggle" id="sidebarToggle" type="button" data-i18n="collapseFilters" aria-expanded="true">收起</button>
+
+        <label class="field">
+          <span data-i18n="language">语言</span>
+          <select id="languageSelect">
+            <option value="zh">中文</option>
+            <option value="en">English</option>
+            <option value="de">Deutsch</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span data-i18n="material">物料名称</span>
+          <select id="materialFilter"></select>
+        </label>
+
+        <label class="field">
+          <span data-i18n="pasteMaterial">粘贴/搜索物料号</span>
+          <input id="materialPaste" placeholder="A5E..." />
+        </label>
+
+        <label class="field">
+          <span data-i18n="supplier">供应商名字</span>
+          <input id="supplierSearch" type="search" placeholder="搜索供应商" />
+        </label>
+
+        <div class="weight-panel">
+          <div class="panel-heading">
+            <h2 data-i18n="weightTitle">选择维度权重</h2>
+            <button id="resetWeights" type="button" data-i18n="reset">重置</button>
+          </div>
+          <label class="range-row">
+            <span data-i18n="priceWeight">总单价</span>
+            <input id="priceWeight" type="range" min="0" max="50" value="40" />
+            <strong id="priceWeightValue">40</strong>
+          </label>
+          <label class="range-row">
+            <span data-i18n="leadTimeWeight">物流/件</span>
+            <input id="leadTimeWeight" type="range" min="0" max="50" value="25" />
+            <strong id="leadTimeWeightValue">25</strong>
+          </label>
+          <label class="range-row">
+            <span data-i18n="qualityWeight">材料单价</span>
+            <input id="qualityWeight" type="range" min="0" max="50" value="20" />
+            <strong id="qualityWeightValue">20</strong>
+          </label>
+          <label class="range-row">
+            <span data-i18n="serviceWeight">CO2</span>
+            <input id="serviceWeight" type="range" min="0" max="50" value="10" />
+            <strong id="serviceWeightValue">10</strong>
+          </label>
+          <label class="range-row">
+            <span data-i18n="riskWeight">MOQ</span>
+            <input id="riskWeight" type="range" min="0" max="50" value="5" />
+            <strong id="riskWeightValue">5</strong>
+          </label>
+        </div>
+
+      </aside>
+
+      <main class="workspace">
+        <nav class="page-tabs" aria-label="Platform pages">
+          <button class="tab-button is-active" id="decisionTab" type="button" data-page="decision" data-i18n="decisionPage">决策页</button>
+          <button class="tab-button" id="analysisTab" type="button" data-page="analysis" data-i18n="analysisPage">分析页</button>
+          <button class="tab-button" id="recordsTab" type="button" data-page="records" data-i18n="recordsPage">数据记录</button>
+        </nav>
+
+        <section class="page-panel" id="decisionPage">
+        <section class="decision-header" id="recommendationPanel">
+          <div class="decision-copy">
+            <div class="decision-copy-top">
+              <div>
+                <p class="eyebrow" data-i18n="decisionDesk">Decision desk</p>
+                <h2 data-i18n="summaryTitle">用数据快速判断更合适的供应商</h2>
+              </div>
+              <div class="decision-actions">
+                <button id="approvalSave" type="button" data-i18n="approvalSave">保存</button>
+                <button id="approvalExport" type="button" data-i18n="export">导出CSV</button>
+                <button id="approvalPrint" type="button" data-i18n="print">打印</button>
+                <span id="approvalNotice" aria-live="polite"></span>
+              </div>
+            </div>
+            <div class="recommendation-line">
+              <span data-i18n="recommended">推荐选择</span>
+              <strong id="recommendedSupplier">-</strong>
+              <em id="recommendedCost">-</em>
+            </div>
+            <p id="recommendationReason">-</p>
+          </div>
+        </section>
+
+        <section class="supplier-form-panel">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow" data-i18n="supplierSetup">Supplier setup</p>
+              <h2 data-i18n="addSupplierTitle">新增供应商</h2>
+            </div>
+            <div class="button-group">
+              <button id="toggleSupplierForm" type="button" data-i18n="showAddSupplier">
+                添加供应商
+              </button>
+              <button id="clearCustomSuppliers" type="button" data-i18n="clearCustom">
+                清空新增
+              </button>
+            </div>
+          </div>
+          <form id="supplierForm" class="supplier-form is-hidden">
+            <label class="field is-required">
+              <span data-i18n="material">物料名称</span>
+              <input id="formMaterial" name="material" required placeholder="PCB Assembly" />
+            </label>
+            <label class="field is-required">
+              <span data-i18n="supplier">供应商名字</span>
+              <input id="formSupplier" name="supplier" required placeholder="Supplier name" />
+            </label>
+            <label class="field is-required">
+              <span data-i18n="region">区域</span>
+              <input id="formRegion" name="region" required placeholder="China" />
+            </label>
+            <label class="field is-required">
+              <span data-i18n="incoterms">Incoterms</span>
+              <select id="formIncoterm" name="incoterm" required>
+                <option value="EXW">EXW</option>
+                <option value="FOB">FOB</option>
+                <option value="CIF">CIF</option>
+                <option value="DAP">DAP</option>
+                <option value="DDP">DDP</option>
+              </select>
+            </label>
+            <label class="field is-required">
+              <span data-i18n="currency">货币</span>
+              <select id="formCurrency" name="currency" required>
+                <option value="USD">USD</option>
+                <option value="EUR">EUR</option>
+                <option value="CNY">CNY</option>
+              </select>
+            </label>
+            <label class="field is-required">
+              <span data-i18n="materialCost">材料成本</span>
+              <input id="formPrice" name="price" inputmode="decimal" required />
+            </label>
+            <label class="field is-required">
+              <span data-i18n="capacity">月产能</span>
+              <input id="formCapacity" name="capacity" inputmode="numeric" value="0" />
+            </label>
+            <label class="field is-required">
+              <span data-i18n="moq">MOQ</span>
+              <input id="formMoq" name="moq" inputmode="numeric" value="0" />
+            </label>
+            <label class="field">
+              <span>Share</span>
+              <input id="formShare" inputmode="decimal" value="1" />
+            </label>
+            <label class="field is-required">
+              <span data-i18n="weightPerPiece">单件重量</span>
+              <input id="formWeightPerPiece" inputmode="decimal" value="0.1" />
+            </label>
+            <label class="field is-required">
+              <span data-i18n="packagingType">包装类型</span>
+              <select id="formPvForm" required></select>
+            </label>
+            <label class="field is-required">
+              <span data-i18n="amountPerBin">每箱数量</span>
+              <input id="formAmountPerBin" inputmode="numeric" value="20" />
+            </label>
+            <label class="field is-required">
+              <span data-i18n="packingPerPallet">每托数量</span>
+              <input id="formPackingPerPallet" inputmode="numeric" value="240" />
+            </label>
+            <label class="field is-required">
+              <span data-i18n="repackCostPerContainer">包装操作/箱</span>
+              <input id="formRepackCostPerContainer" inputmode="decimal" value="5.58" />
+            </label>
+            <label class="field is-required">
+              <span data-i18n="seaCost">海运/LKW每MOQ</span>
+              <input id="formSeaCost" inputmode="decimal" value="0" />
+            </label>
+            <label class="field is-required">
+              <span data-i18n="airCost">空运/Flash每MOQ</span>
+              <input id="formAirCost" inputmode="decimal" value="0" />
+            </label>
+            <label class="field">
+              <span data-i18n="co2Sea">CO2每MOQ</span>
+              <input id="formCo2Sea" inputmode="decimal" value="0" />
+            </label>
+            <label class="field">
+              <span data-i18n="co2Air">CO2空运</span>
+              <input id="formCo2Air" inputmode="decimal" value="0" />
+            </label>
+            <label class="field is-required">
+              <span data-i18n="oneTimeCost">一次性物流成本</span>
+              <input id="formOneTimeCost" inputmode="decimal" value="0" />
+            </label>
+            <div class="form-actions">
+              <span id="savedNotice" aria-live="polite"></span>
+              <button type="submit" data-i18n="saveSupplier">保存供应商</button>
+            </div>
+            <div class="upload-panel">
+              <div>
+                <p class="eyebrow" data-i18n="batchUpload">批量上传</p>
+                <h3 data-i18n="excelUploadTitle">上传 Excel/CSV 供应商数据</h3>
+                <p data-i18n="excelUploadHint">建议使用模板字段，一次上传多个物料和供应商。</p>
+              </div>
+              <label class="upload-button" for="excelUploadFile" data-i18n="uploadExcel">上传Excel</label>
+              <input id="excelUploadFile" type="file" accept=".csv,.tsv,.txt,.xlsx" />
+            </div>
+          </form>
+        </section>
+
+        <section class="content-grid">
+          <section class="analytics-grid">
+            <div class="analytics-card">
+              <div class="section-heading compact-heading">
+                <h3 data-i18n="unitCostChart">总单价对比</h3>
+              </div>
+              <div id="unitCostChart" class="mini-chart"></div>
+            </div>
+            <div class="analytics-card">
+              <div class="section-heading compact-heading">
+                <h3 data-i18n="costStructureChart">成本结构</h3>
+              </div>
+              <div id="costStructureChart" class="stack-chart"></div>
+            </div>
+          </section>
+          <div class="table-wrap">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow" data-i18n="comparison">Comparison</p>
+                <h2 data-i18n="supplierTable">供应商 ToCo 对比表</h2>
+              </div>
+            </div>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th data-sort="decisionScore" data-i18n="score">评分</th>
+                    <th data-sort="supplier" data-i18n="supplier">供应商名字</th>
+                    <th data-sort="region" data-i18n="region">区域</th>
+                    <th data-sort="incoterm" data-i18n="incoterms">Incoterms</th>
+                    <th data-sort="moq" data-i18n="moq">MOQ</th>
+                    <th data-sort="materialPrice" data-i18n="quality">质量</th>
+                    <th data-sort="logisticsPerPiece" data-i18n="leadTime">交期</th>
+                    <th data-sort="totalUnitCost" data-i18n="price">价格</th>
+                  </tr>
+                </thead>
+                <tbody id="supplierRows"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+        </section>
+
+        <section class="page-panel is-hidden" id="analysisPage">
+          <section class="analytics-grid analysis-grid">
+            <div class="analytics-card wide-card">
+              <div class="section-heading compact-heading">
+                <h3 data-i18n="priceTrend">物料价格趋势</h3>
+              </div>
+              <div id="priceTrendChart" class="trend-chart"></div>
+            </div>
+            <div class="analytics-card wide-card">
+              <div class="section-heading compact-heading">
+                <h3 data-i18n="supplierCooperation">供应商合作追踪</h3>
+              </div>
+              <div id="supplierCooperationChart" class="cooperation-chart"></div>
+            </div>
+          </section>
+          <div class="table-wrap">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow" data-i18n="analysisPage">分析页</p>
+                <h2 data-i18n="supplierCooperation">供应商合作追踪</h2>
+              </div>
+            </div>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th data-i18n="supplier">供应商名字</th>
+                    <th data-i18n="matchedSuppliers">匹配供应商</th>
+                    <th data-i18n="price">平均总单价</th>
+                    <th data-i18n="leadTime">平均物流/件</th>
+                    <th data-i18n="risk">CO2/年</th>
+                  </tr>
+                </thead>
+                <tbody id="cooperationRows"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="page-panel is-hidden" id="recordsPage">
+          <div class="table-wrap">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow" data-i18n="recordsPage">数据记录</p>
+                <h2 data-i18n="allRecords">所有供应商数据记录</h2>
+              </div>
+              <div class="button-group">
+                <button id="saveData" type="button" data-i18n="saveData">保存数据</button>
+                <button id="exportCsv" type="button" data-i18n="export">导出CSV</button>
+              </div>
+            </div>
+            <div class="table-scroll records-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Mat. No.</th>
+                    <th data-i18n="material">物料名称</th>
+                    <th data-i18n="supplier">供应商名字</th>
+                    <th data-i18n="region">区域</th>
+                    <th data-i18n="incoterms">Incoterms</th>
+                    <th data-i18n="packagingType">包装类型</th>
+                    <th data-i18n="price">总单价/件</th>
+                    <th data-i18n="quality">材料单价</th>
+                    <th data-i18n="leadTime">物流/件</th>
+                    <th data-i18n="annualCostBreakdown">年度物流</th>
+                    <th data-i18n="transportCost">运输</th>
+                    <th data-i18n="storageCost">库存</th>
+                    <th data-i18n="handlingCost">Handling</th>
+                    <th data-i18n="repackCost">Repack</th>
+                    <th data-i18n="customsCost">关税</th>
+                    <th data-i18n="warehouseCost">高架仓储</th>
+                    <th data-i18n="oneTimeCost">一次性物流成本</th>
+                    <th data-i18n="moq">MOQ</th>
+                    <th>Forecast</th>
+                    <th data-i18n="risk">CO2/年</th>
+                  </tr>
+                </thead>
+                <tbody id="recordRows"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="embedded-data.js"></script>
+    <script src="embedded-new-tco-data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
