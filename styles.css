@@ -987,8 +987,15 @@ dd {
 }
 
 @media print {
+  @page {
+    size: A4 landscape;
+    margin: 10mm;
+  }
+
   body {
     background: white;
+    color: #000028;
+    font-size: 10px;
   }
 
   .sidebar,
@@ -1002,15 +1009,129 @@ dd {
 
   .app-shell {
     display: block;
+    min-height: auto;
   }
 
   .workspace {
     padding: 0;
   }
 
+  .page-panel,
+  .content-grid,
+  .analytics-grid,
+  .decision-header {
+    display: block !important;
+  }
+
+  #decisionPage {
+    display: block !important;
+  }
+
   .decision-copy,
   .analytics-card,
   .table-wrap {
+    break-inside: avoid;
+    margin-bottom: 8px;
+    border-color: #cdd7dc;
     box-shadow: none;
+  }
+
+  .decision-copy {
+    padding: 12px 14px;
+    border-top-width: 3px;
+  }
+
+  .decision-copy-top {
+    display: block;
+  }
+
+  .decision-copy h2:first-of-type {
+    max-width: none;
+    margin-bottom: 8px;
+    font-size: 20px;
+    line-height: 1.15;
+  }
+
+  .recommendation-line {
+    margin: 4px 0 6px;
+  }
+
+  .recommendation-line strong {
+    font-size: 18px;
+  }
+
+  .decision-copy p:last-child {
+    max-width: none;
+    font-size: 10px;
+    line-height: 1.35;
+  }
+
+  .analytics-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .analytics-card {
+    min-height: auto;
+    padding: 10px;
+  }
+
+  .analytics-card h3 {
+    font-size: 12px;
+  }
+
+  .mini-chart,
+  .stack-chart {
+    gap: 7px;
+  }
+
+  .hbar-row,
+  .stack-row {
+    grid-template-columns: minmax(92px, 0.9fr) minmax(120px, 1.4fr) minmax(66px, 0.55fr);
+    gap: 7px;
+    font-size: 9px;
+  }
+
+  .hbar-track,
+  .stack-track {
+    height: 12px;
+  }
+
+  .table-wrap {
+    padding: 10px;
+  }
+
+  .table-scroll {
+    max-height: none;
+    overflow: visible;
+    border: 0;
+  }
+
+  table {
+    table-layout: fixed;
+    width: 100%;
+  }
+
+  th {
+    position: static;
+    background: #eef4f5;
+    cursor: default;
+  }
+
+  th,
+  td {
+    padding: 5px 6px;
+    font-size: 8.5px;
+    line-height: 1.2;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  .score-pill {
+    min-width: 28px;
+    height: 18px;
+    font-size: 8.5px;
   }
 }
