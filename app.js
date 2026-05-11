@@ -383,7 +383,7 @@ const translations = {
 };
 
 const state = {
-  language: "zh",
+  language: "en",
   sortKey: "decisionScore",
   sortDirection: "desc",
   selectedSupplierId: null,
